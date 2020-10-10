@@ -1,6 +1,8 @@
 sm
 ===
 
+[`sm`在线教程](https://arthas.aliyun.com/doc/arthas-tutorials?language=cn&id=command-sm)
+
 > 查看已加载类的方法信息
 
 “Search-Method” 的简写，这个命令能搜索出所有已经加载了 Class 信息的方法信息。
@@ -15,74 +17,70 @@ sm
 |*method-pattern*|方法名表达式匹配|
 |[d]|展示每个方法的详细信息|
 |[E]|开启正则表达式匹配，默认为通配符匹配|
+|`[c:]`|指定class的 ClassLoader 的 hashcode|
+|`[classLoaderClass:]`|指定执行表达式的 ClassLoader 的 class name|
+|`[n:]`|具有详细信息的匹配类的最大数量（默认为100）|
 
 ### 使用参考
 
+```bash
+$ sm java.lang.String
+java.lang.String-><init>
+java.lang.String->equals
+java.lang.String->toString
+java.lang.String->hashCode
+java.lang.String->compareTo
+java.lang.String->indexOf
+java.lang.String->valueOf
+java.lang.String->checkBounds
+java.lang.String->length
+java.lang.String->isEmpty
+java.lang.String->charAt
+java.lang.String->codePointAt
+java.lang.String->codePointBefore
+java.lang.String->codePointCount
+java.lang.String->offsetByCodePoints
+java.lang.String->getChars
+java.lang.String->getBytes
+java.lang.String->contentEquals
+java.lang.String->nonSyncContentEquals
+java.lang.String->equalsIgnoreCase
+java.lang.String->compareToIgnoreCase
+java.lang.String->regionMatches
+java.lang.String->startsWith
+java.lang.String->endsWith
+java.lang.String->indexOfSupplementary
+java.lang.String->lastIndexOf
+java.lang.String->lastIndexOfSupplementary
+java.lang.String->substring
+java.lang.String->subSequence
+java.lang.String->concat
+java.lang.String->replace
+java.lang.String->matches
+java.lang.String->contains
+java.lang.String->replaceFirst
+java.lang.String->replaceAll
+java.lang.String->split
+java.lang.String->join
+java.lang.String->toLowerCase
+java.lang.String->toUpperCase
+java.lang.String->trim
+java.lang.String->toCharArray
+java.lang.String->format
+java.lang.String->copyValueOf
+java.lang.String->intern
+Affect(row-cnt:44) cost in 1342 ms.
 ```
-$ sm org.apache.catalina.connector.Connector
-org.apache.catalina.connector.Connector-><init>
-org.apache.catalina.connector.Connector->setProperty
-org.apache.catalina.connector.Connector->getProperty
-org.apache.catalina.connector.Connector->toString
-org.apache.catalina.connector.Connector->resume
-org.apache.catalina.connector.Connector->getScheme
-org.apache.catalina.connector.Connector->getProtocol
-org.apache.catalina.connector.Connector->getPort
-org.apache.catalina.connector.Connector->setService
-org.apache.catalina.connector.Connector->setPort
-org.apache.catalina.connector.Connector->getService
-org.apache.catalina.connector.Connector->getAttribute
-org.apache.catalina.connector.Connector->setAttribute
-org.apache.catalina.connector.Connector->getLocalPort
-org.apache.catalina.connector.Connector->pause
-org.apache.catalina.connector.Connector->setProtocol
-org.apache.catalina.connector.Connector->initInternal
-org.apache.catalina.connector.Connector->setSecure
-org.apache.catalina.connector.Connector->getSecure
-org.apache.catalina.connector.Connector->startInternal
-org.apache.catalina.connector.Connector->stopInternal
-org.apache.catalina.connector.Connector->setScheme
-org.apache.catalina.connector.Connector->createRequest
-org.apache.catalina.connector.Connector->getDomainInternal
-org.apache.catalina.connector.Connector->getProtocolHandler
-org.apache.catalina.connector.Connector->setURIEncoding
-org.apache.catalina.connector.Connector->findSslHostConfigs
-org.apache.catalina.connector.Connector->destroyInternal
-org.apache.catalina.connector.Connector->getObjectNameKeyProperties
-org.apache.catalina.connector.Connector->getAllowTrace
-org.apache.catalina.connector.Connector->setAllowTrace
-org.apache.catalina.connector.Connector->getAsyncTimeout
-org.apache.catalina.connector.Connector->setAsyncTimeout
-org.apache.catalina.connector.Connector->getEnableLookups
-org.apache.catalina.connector.Connector->setEnableLookups
-org.apache.catalina.connector.Connector->getMaxCookieCount
-...
 
-```
-
-```sh
-$ sm org.apache.catalina.connector.Connector -d
- declaring-class   org.apache.catalina.connector.Connector
- constructor-name  <init>
- modifier          public
- annotation
- parameters
- exceptions
-
- declaring-class   org.apache.catalina.connector.Connector
- constructor-name  <init>
- modifier          public
- annotation
- parameters        java.lang.String
- exceptions
-
- declaring-class  org.apache.catalina.connector.Connector
- method-name      setProperty
+```bash
+$ sm -d java.lang.String toString
+ declaring-class  java.lang.String
+ method-name      toString
  modifier         public
  annotation
- parameters       java.lang.String
-                  java.lang.String
- return           boolean
+ parameters
+ return           java.lang.String
  exceptions
- ......
+
+Affect(row-cnt:1) cost in 3 ms.
 ```

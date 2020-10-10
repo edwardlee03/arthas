@@ -1,11 +1,13 @@
 执行结果存日志
 ===
 
+[`执行结果存日志`在线教程](https://arthas.aliyun.com/doc/arthas-tutorials?language=cn&id=case-save-log)
+
 > 将命令的结果完整保存在日志文件中，便于后续进行分析
 
 * 默认情况下，该功能是关闭的，如果需要开启，请执行以下命令：
 
-```sh
+```bash
 $ options save-result true
  NAME         BEFORE-VALUE  AFTER-VALUE
 ----------------------------------------
@@ -21,10 +23,10 @@ Affect(row-cnt:1) cost in 3 ms.
 
 ### 使用新版本Arthas的异步后台任务将结果存日志文件
 
-```sh
+```bash
 $ trace Test t >>  &
 job id  : 2
-cache location  : /Users/zhuyong/logs/arthas-cache/28198/2
+cache location  : /Users/admin/logs/arthas-cache/28198/2
 ```
 
 此时命令会在后台异步执行，并将结果异步保存在文件（~/logs/arthas-cache/${PID}/${JobId}）中；

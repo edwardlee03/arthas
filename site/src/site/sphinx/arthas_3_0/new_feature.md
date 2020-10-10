@@ -16,7 +16,7 @@ Arthas 3.0最重要的特性，通过Arthas在线诊断平台，无需再登陆�
 
 Arthas 3.0开始支持管道, 率先提供了`grep`,`wc`,`plaintext`的支持。
 
-```sh
+```bash
  java.vendor.url                                      http://java.oracle.com/
  java.vm.vendor                                       Oracle Corporation
  java.runtime.name                                    Java(TM) SE Runtime Environment
@@ -55,7 +55,7 @@ To solve this, choose one of the following command:
 
 groovy表达式在arthas2.0中大量使用，例如watch表达式
 
-```sh
+```bash
 watch com.alibaba.sample.petstore.web.store.module.screen.ItemList add "params + ' ' + returnObj" params.size()==2
 ```
 
@@ -63,7 +63,7 @@ watch com.alibaba.sample.petstore.web.store.module.screen.ItemList add "params +
 
 为了避免这个问题，Arthas 3.0中使用了ognl这个更加轻量的表达式求值库来代替groovy，彻底解决了groovy引起的FGC风险。但由于这个替换，导致原来使用groovy脚本编写的自定义脚本失效。这个问题留待后续解决。
 
-在3.0中，watch命令的表达式部分的书写有了一些改变，详见[这里](https://alibaba.github.io/arthas/watch)
+在3.0中，watch命令的表达式部分的书写有了一些改变，详见[这里](https://arthas.aliyun.com/doc/watch)
 ### 提升rt统计精度
 
 Arthas 2.0中，统计rt都是以`ms`为单位，对于某些比较小的方法调用，耗时在毫秒以下的都会被认为是0ms，造成trace总时间和各方法的时间相加不一致等问题（虽然这里面确实会有误差，主要Arthas自身的开销）。Arthas 3.0中所有rt的单位统一改为使用`ns`来统计，精准捕获你的方法耗时，让0ms这样无意义的统计数据不再出现！

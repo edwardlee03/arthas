@@ -1,6 +1,8 @@
 dump
 ===
 
+[`dump`在线教程](https://arthas.aliyun.com/doc/arthas-tutorials?language=cn&id=command-dump)
+
 > dump 已加载类的 bytecode 到特定目录
 
 ### 参数说明
@@ -9,32 +11,54 @@ dump
 |---:|:---|
 |*class-pattern*|类名表达式匹配|
 |`[c:]`|类所属 ClassLoader 的 hashcode|
+|`[classLoaderClass:]`|指定执行表达式的 ClassLoader 的 class name|
+|`[d:]`|设置类文件的目标目录|
 |[E]|开启正则表达式匹配，默认为通配符匹配|
 
 ### 使用参考
 
-```shell
-$ dump -E org\.apache\.commons\.lang\.StringUtils
- HASHCODE  CLASSLOADER                                                        LOCATION
- 29505d69  +-tddl-client's ModuleClassLoader                                  /Users/zhuyong/middleware/taobao-tomcat/output/build/bin/classdump/com.taobao.pandora
-                                                                              .service.loader.ModuleClassLoader-29505d69/org.apache.commons.lang.StringUtils.class
- 6e51ad67  +-java.net.URLClassLoader@6e51ad67                                 /Users/zhuyong/middleware/taobao-tomcat/output/build/bin/classdump/java.net.URLClassL
-             +-sun.misc.Launcher$AppClassLoader@6951a712                      oader-6e51ad67/org.apache.commons.lang.StringUtils.class
-               +-sun.misc.Launcher$ExtClassLoader@6fafc4c2
- 2bdd9114  +-pandora-qos-service's ModuleClassLoader                          /Users/zhuyong/middleware/taobao-tomcat/output/build/bin/classdump/com.taobao.pandora
-                                                                              .service.loader.ModuleClassLoader-2bdd9114/org.apache.commons.lang.StringUtils.class
- 544dc9ba  +-com.taobao.tomcat.container.context.loader.AliWebappClassLoader  /Users/zhuyong/middleware/taobao-tomcat/output/build/bin/classdump/com.taobao.tomcat.
-             +-org.apache.catalina.loader.StandardClassLoader@2302e984        container.context.loader.AliWebappClassLoader-544dc9ba/org.apache.commons.lang.String
-               +-sun.misc.Launcher$AppClassLoader@6951a712                    Utils.class
-                 +-sun.misc.Launcher$ExtClassLoader@6fafc4c2
- 22880c2b  +-java.net.URLClassLoader@22880c2b                                 /Users/zhuyong/middleware/taobao-tomcat/output/build/bin/classdump/java.net.URLClassL
-             +-sun.misc.Launcher$AppClassLoader@6951a712                      oader-22880c2b/org.apache.commons.lang.StringUtils.class
-               +-sun.misc.Launcher$ExtClassLoader@6fafc4c2
-Affect(row-cnt:5) cost in 156 ms.
-$ dump -E org\.apache\.commons\.lang\.StringUtils -c 22880c2b
- HASHCODE  CLASSLOADER                                      LOCATION
- 22880c2b  +-java.net.URLClassLoader@22880c2b               /Users/zhuyong/middleware/taobao-tomcat/output/build/bin/classdump/java.net.URLClassLoader-22880c2b/org
-             +-sun.misc.Launcher$AppClassLoader@6951a712    .apache.commons.lang.StringUtils.class
-               +-sun.misc.Launcher$ExtClassLoader@6fafc4c2
-Affect(row-cnt:1) cost in 67 ms.
+```bash
+$ dump java.lang.String
+ HASHCODE  CLASSLOADER  LOCATION
+ null                   /Users/admin/logs/arthas/classdump/java/lang/String.class
+Affect(row-cnt:1) cost in 119 ms.
 ```
+
+```bash
+$ dump demo.*
+ HASHCODE  CLASSLOADER                                    LOCATION
+ 3d4eac69  +-sun.misc.Launcher$AppClassLoader@3d4eac69    /Users/admin/logs/arthas/classdump/sun.misc.Launcher$AppClassLoader-3d4eac69/demo/MathGame.class
+             +-sun.misc.Launcher$ExtClassLoader@66350f69
+Affect(row-cnt:1) cost in 39 ms.
+```
+
+```bash
+$ dump -d /tmp/output java.lang.String
+ HASHCODE  CLASSLOADER  LOCATION
+ null                   /tmp/output/java/lang/String.class
+Affect(row-cnt:1) cost in 138 ms.
+```
+
+* 指定classLoader
+
+注意hashcode是变化的，需要先查看当前的ClassLoader信息，提取对应ClassLoader的hashcode。
+
+如果你使用`-c`，你需要手动输入hashcode：`-c <hashcode>`
+
+```bash
+$ dump -c 3d4eac69 demo.*
+```
+
+对于只有唯一实例的ClassLoader可以通过`--classLoaderClass`指定class name，使用起来更加方便：
+
+```bash
+$ dump --classLoaderClass sun.misc.Launcher$AppClassLoader demo.*
+ HASHCODE  CLASSLOADER                                    LOCATION
+ 3d4eac69  +-sun.misc.Launcher$AppClassLoader@3d4eac69    /Users/admin/logs/arthas/classdump/sun.misc.Launcher$AppClassLoader-3d4eac69/demo/MathGame.class
+             +-sun.misc.Launcher$ExtClassLoader@66350f69
+Affect(row-cnt:1) cost in 39 ms.
+```
+
+  * 注: 这里classLoaderClass 在 java 8 是 sun.misc.Launcher$AppClassLoader，而java 11的classloader是jdk.internal.loader.ClassLoaders$AppClassLoader，katacoda目前环境是java8。
+
+`--classLoaderClass` 的值是ClassLoader的类名，只有匹配到唯一的ClassLoader实例时才能工作，目的是方便输入通用命令，而`-c <hashcode>`是动态变化的。
